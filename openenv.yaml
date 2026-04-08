@@ -1,0 +1,43 @@
+name: email-winning
+version: "1.0"
+description: >
+  An OpenEnv environment where an AI agent classifies and replies to emails
+  across three difficulty tiers (easy, medium, hard).
+
+tasks:
+  - name: easy
+    grader: grade_easy
+    description: Detect at least one urgent email
+  - name: medium
+    grader: grade_medium
+    description: Correctly label spam and normal emails
+  - name: hard
+    grader: grade_hard
+    description: Full classification accuracy + reply quality
+
+reward_range:
+  min: 0.0
+  max: 1.0
+
+observation_space:
+  type: object
+  description: Inbox emails, action history, step count
+
+action_space:
+  type: object
+  fields:
+    type: [classify, reply]
+    email_id: integer
+    label: [urgent, spam, normal]
+    response: string
+
+endpoints:
+  reset: POST /reset
+  step:  POST /step
+  state: GET  /state
+  grade: POST /grade
+
+runtime:
+  port: 7860
+  max_steps: 12
+  timeout_minutes: 20

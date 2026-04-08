@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Email AI Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
+    h2 { color: #333; }
+    .panel { background: white; padding: 16px; border-radius: 8px; margin-bottom: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    pre { background: #eee; padding: 10px; border-radius: 4px; overflow-x: auto; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <h2>📧 Email AI Dashboard</h2>
+  <div class="panel">
+    <h3>Inbox</h3>
+    <pre id="inbox">Loading...</pre>
+  </div>
+  <div class="panel">
+    <h3>Action History</h3>
+    <pre id="history">Loading...</pre>
+  </div>
+  <script>
+    async function fetchData() {
+      const resp = await fetch('inference_output.json').catch(() => null);
+      if (!resp) {
+        document.getElementById('inbox').textContent = 'No data yet. Run inference.py to generate output.';
+        document.getElementById('history').textContent = 'Waiting...';
+        return;
+      }
+      const data = await resp.json();
+      document.getElementById('inbox').textContent = JSON.stringify(data.inbox, null, 2);
+      document.getElementById('history').textContent = JSON.stringify(data.history, null, 2);
+    }
+    fetchData();
+    setInterval(fetchData, 2000);
+  </script>
+</body>
+</html>
